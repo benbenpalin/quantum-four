@@ -1,7 +1,12 @@
 (ns quantum-four.subs
-  (:require [re-frame.core :as re-frame]))
+  (:require [re-frame.core :as rf]))
 
-(re-frame/reg-sub
+(rf/reg-sub
  ::board
  (fn [db]
    (:board db)))
+
+(rf/reg-sub
+  ::turn
+  (fn [db]
+      (:turn db)))
