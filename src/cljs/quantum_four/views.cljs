@@ -21,9 +21,9 @@
 
 (defn main-panel []
   (let [current-board @(rf/subscribe [::subs/board])
-        board-numbers (for [i (range 7)
-                            j (range 6)]
-                           [j i])
+        board-numbers (for [i (range 6)
+                            j (range 7)]
+                           [i j])
         board-vector (vec (map #(make-space % current-board) board-numbers))]
     [:div
      [:h1 "Quantum Four"]

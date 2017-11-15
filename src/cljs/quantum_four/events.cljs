@@ -17,8 +17,6 @@
           new-turn (if (= old-turn :r) :b :r)]
       (assoc db :turn new-turn))))
 
-(defn update-space [space board]
-  ())
 
 (rf/reg-event-fx
   ::select-column
