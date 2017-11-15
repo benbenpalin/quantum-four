@@ -15,6 +15,7 @@
       (assoc db :turn new-turn))))
 
 (defn find-empty-space [[orig-row column] board] ;;TODO make an alert if row is full instead of just forcing in the original value
+  "Given a space and a board, this function returns lowest empty space in the column"
   (loop [row 6]
     (if (>= row 0)
       (if (not= :e (get-in board [row column]))
