@@ -6,4 +6,5 @@
            [:e :e :e :e :e :e :e]
            [:e :e :e :e :e :e :e]
            [:e :e :e :e :e :e :e]
-           [:e :e :e :e :e :e :e]]})
+           [:e :e :e :e :e :e :e]]
+   :turn :b})

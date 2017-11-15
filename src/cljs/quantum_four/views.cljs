@@ -1,26 +1,43 @@
 (ns quantum-four.views
   (:require [re-frame.core :as rf]
-            [quantum-four.subs :as subs]))
+            [quantum-four.subs :as subs]
+            [quantum-four.events :as events]))
 
 (defn add-row-element [vect]
+  "Given a vector of [:td _] vectors, this function adds :tr to groups of 7"
   (loop [i       0
          sub-vec []
          new-vec []]
     (if (< i (count vect))
       (if (= 0 (rem i 7))
-        (recur (inc i) [:tr (vect i)] (conj new-vec sub-vec))
+        (recur (inc i) ^{:key i}[:tr (vect i)] (conj new-vec sub-vec))
         (recur (inc i) (conj sub-vec (vect i)) new-vec))
-      (rest new-vec))))
+      (rest (conj new-vec sub-vec)))))
+
+(defn make-space [space board]
+  "Given a space and a board, this function creates the HTML for the table cell,
+   it's action, and it's value"
+  (vector :td
+          {:on-click #(rf/dispatch [::events/select-column space])}
+          (get-in board space)))
+
+(defn table-board []
+  "Creates the HTML for the game table that is seen by the players"
+  (let [current-board @(rf/subscribe [::subs/board])
+        board-numbers (for [i (range 6)
+                            j (range 7)]
+                           [i j])
+        board-vector (vec (map #(make-space % current-board) board-numbers))]
+    [:table>tbody
+     (add-row-element board-vector)]))
 
 (defn main-panel []
-  (let [current-board (rf/subscribe [::subs/board])
-        board-numbers (for [i (range 7)
-                            j (range 6)]
-                           [j i])
-        space-value #(name (get-in @current-board [(% 0) (% 1)]))
-        board-vector (vec (map #(vector :td (space-value %)) board-numbers))]
-    [:div
-     [:h1 "Quantum Four"]
-     [:div
-      [:table
-       (add-row-element board-vector)]]]))
+  [:div
+   [:h1 "Quantum Four"]
+   [:div
+    [table-board]
+    [:p "Turn: "
+     (let [turn @(rf/subscribe [::subs/turn])]
+       (if (= turn :r)
+         "Red"
+         "Black"))]]])
