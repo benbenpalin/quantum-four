@@ -16,3 +16,12 @@
     (let [old-turn (:turn db)
           new-turn (if (= old-turn :r) :b :r)]
       (assoc db :turn new-turn))))
+
+(defn update-space [space board]
+  ())
+
+(rf/reg-event-fx
+  ::select-column
+  (fn [{:keys [db]} [_ space]]
+    {:db (update db :board #(assoc-in % space (:turn db)))
+     :dispatch [::change-turn]}))

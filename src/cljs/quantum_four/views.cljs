@@ -12,11 +12,11 @@
       (if (= 0 (rem i 7))
         (recur (inc i) [:tr (vect i)] (conj new-vec sub-vec))
         (recur (inc i) (conj sub-vec (vect i)) new-vec))
-      (rest new-vec))))
+      (rest (conj new-vec sub-vec)))))
 
 (defn make-space [space board]
   (vector :td
-          {:on-click #(rf/dispatch [::events/change-turn])}
+          {:on-click #(rf/dispatch [::events/select-column space])}
           (get-in board space)))
 
 (defn main-panel []
