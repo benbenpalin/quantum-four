@@ -41,8 +41,9 @@
 (defn main-panel []
   [:div
    [:h1 "Quantum Four"]
-   [:div
-    [table-board]
+   [:div.board
+    [table-board]]
+   [:div.below
     [:p "Turn: "
      (let [turn @(rf/subscribe [::subs/turn])]
        (if (= turn :r)
