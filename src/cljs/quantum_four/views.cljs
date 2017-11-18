@@ -14,12 +14,19 @@
         (recur (inc i) (conj sub-vec (vect i)) new-vec))
       (rest (conj new-vec sub-vec)))))
 
+(defn circle [value]
+  (case value
+    :e [:div]
+    :r [:div.red]
+    :b [:div.black]))
+
 (defn make-space [space board]
   "Given a space and a board, this function creates the HTML for the table cell,
    it's action, and it's value"
-  (vector :td
-          {:on-click #(rf/dispatch [::events/select-column space])}
-          (get-in board space)))
+  (let [space-value (get-in board space)]
+    (vector :td
+            {:on-click #(rf/dispatch [::events/select-column space])}
+            (circle space-value))))
 
 (defn table-board []
   "Creates the HTML for the game table that is seen by the players"
@@ -41,3 +48,4 @@
        (if (= turn :r)
          "Red"
          "Black"))]]])
+
