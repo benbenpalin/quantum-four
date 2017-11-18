@@ -47,5 +47,6 @@
      (let [turn @(rf/subscribe [::subs/turn])]
        (if (= turn :r)
          "Red"
-         "Black"))]]])
+         "Black"))]
+    [:p "Alerts: " @(rf/subscribe [::subs/alert])]]])
 

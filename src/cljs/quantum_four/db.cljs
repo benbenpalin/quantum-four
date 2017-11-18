@@ -7,4 +7,5 @@
            [:e :e :e :e :e :e :e]
            [:e :e :e :e :e :e :e]
            [:e :e :e :e :e :e :e]]
-   :turn :b})
+   :turn :b
+   :alert ""})

@@ -10,3 +10,8 @@
   ::turn
   (fn [db]
       (:turn db)))
+
+(rf/reg-sub
+  ::alert
+  (fn [db]
+      (:alert db)))
