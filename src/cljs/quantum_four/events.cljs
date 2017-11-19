@@ -7,6 +7,32 @@
  (fn  [_ _]
    db/default-db))
 
+(defn same-color? [board space orig-color]
+  (let [space-color (get-in board space)]
+    (and (= orig-color space-color)
+         (not= space-color :e))))
+
+(defn four-in-a-row? [board space]
+  (let [color (get-in board space)]
+    (loop [directions  [[0 1]
+                        [-1 1]
+                        [-1 0]
+                        [-1 -1]
+                        [0 -1]
+                        [1 -1]
+                        [1 0]
+                        [1 1]]
+           direction   (first directions)
+           new-space   (map + space direction)
+           connections 1]
+      (if (seq directions)
+        (if (not= connections 4)
+          (if (same-color? board new-space color)
+            (recur directions direction (map + new-space direction) (inc connections))
+            (recur (next directions) (first (next directions)) (map + space (first (next directions))) 1))
+          true)
+        false))))
+
 (rf/reg-event-db
   ::change-turn
   (fn [db _]
