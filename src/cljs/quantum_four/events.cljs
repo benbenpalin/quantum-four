@@ -33,6 +33,16 @@
           true)
         false))))
 
+(defn winning-move? [board]
+  (let [spaces (for [i (range 6)
+                     j (range 7)]
+                 [i j])]
+    (as-> spaces s
+          (map #(four-in-a-row? board %) s)
+          (set s)
+          (s true))))
+
+
 (rf/reg-event-db
   ::change-turn
   (fn [db _]
