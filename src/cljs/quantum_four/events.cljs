@@ -42,6 +42,13 @@
           (set s)
           (s true))))
 
+(rf/reg-event-fx
+  ::check-board
+  (fn [{:keys [db]}]
+    (let [colors {:r "Red" :b "Black"}]
+      (if (winning-move? (:board db))
+        {:db (assoc db :alert (str ((:turn db) colors) " Wins!"))}
+        {:dispatch [::change-turn]}))))
 
 (rf/reg-event-db
   ::change-turn
@@ -65,5 +72,5 @@
     (let [empty-space (find-empty-space space (:board db))]
       (if (not= empty-space "full row")
         {:db (update db :board #(assoc-in % empty-space (:turn db)))
-         :dispatch [::change-turn]}
+         :dispatch [::check-board]}
         {:db (assoc db :alert "This column is full, select a different one")}))))
