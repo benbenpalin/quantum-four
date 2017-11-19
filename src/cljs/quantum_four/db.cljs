@@ -8,4 +8,5 @@
            [:e :e :e :e :e :e :e]
            [:e :e :e :e :e :e :e]]
    :turn :b
-   :alert ""})
+   :alert ""
+   :active true})

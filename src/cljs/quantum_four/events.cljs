@@ -7,6 +7,49 @@
  (fn  [_ _]
    db/default-db))
 
+(defn same-color? [board space orig-color]
+  (let [space-color (get-in board space)]
+    (and (= orig-color space-color)
+         (not= space-color :e))))
+
+(defn four-in-a-row? [board space]
+  (let [color (get-in board space)]
+    (loop [directions  [[0 1]
+                        [-1 1]
+                        [-1 0]
+                        [-1 -1]
+                        [0 -1]
+                        [1 -1]
+                        [1 0]
+                        [1 1]]
+           direction   (first directions)
+           new-space   (map + space direction)
+           connections 1]
+      (if (seq directions)
+        (if (not= connections 4)
+          (if (same-color? board new-space color)
+            (recur directions direction (map + new-space direction) (inc connections))
+            (recur (next directions) (first (next directions)) (map + space (first (next directions))) 1))
+          true)
+        false))))
+
+(defn winning-move? [board]
+  (let [spaces (for [i (range 6)
+                     j (range 7)]
+                 [i j])]
+    (as-> spaces s
+          (map #(four-in-a-row? board %) s)
+          (set s)
+          (s true))))
+
+(rf/reg-event-fx
+  ::check-board
+  (fn [{:keys [db]}]
+    (let [colors {:r "Red" :b "Black"}]
+      (if (winning-move? (:board db))
+        {:db (assoc db :alert (str ((:turn db) colors) " Wins!") :active false)}
+        {:dispatch [::change-turn]}))))
+
 (rf/reg-event-db
   ::change-turn
   (fn [db _]
@@ -29,5 +72,5 @@
     (let [empty-space (find-empty-space space (:board db))]
       (if (not= empty-space "full row")
         {:db (update db :board #(assoc-in % empty-space (:turn db)))
-         :dispatch [::change-turn]}
+         :dispatch [::check-board]}
         {:db (assoc db :alert "This column is full, select a different one")}))))
