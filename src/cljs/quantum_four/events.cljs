@@ -47,7 +47,7 @@
   (fn [{:keys [db]}]
     (let [colors {:r "Red" :b "Black"}]
       (if (winning-move? (:board db))
-        {:db (assoc db :alert (str ((:turn db) colors) " Wins!"))}
+        {:db (assoc db :alert (str ((:turn db) colors) " Wins!") :active false)}
         {:dispatch [::change-turn]}))))
 
 (rf/reg-event-db

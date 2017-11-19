@@ -20,21 +20,23 @@
     :r [:div.red]
     :b [:div.black]))
 
-(defn make-space [space board]
+(defn make-space [space board active?]
   "Given a space and a board, this function creates the HTML for the table cell,
    it's action, and it's value"
   (let [space-value (get-in board space)]
     (vector :td
-            {:on-click #(rf/dispatch [::events/select-column space])}
+            (when active?
+              {:on-click #(rf/dispatch [::events/select-column space])})
             (circle space-value))))
 
 (defn table-board []
   "Creates the HTML for the game table that is seen by the players"
   (let [current-board @(rf/subscribe [::subs/board])
+        winner?       @(rf/subscribe [::subs/active])
         board-numbers (for [i (range 6)
                             j (range 7)]
                            [i j])
-        board-vector (vec (map #(make-space % current-board) board-numbers))]
+        board-vector (vec (map #(make-space % current-board winner?) board-numbers))]
     [:table>tbody
      (add-row-element board-vector)]))
 
