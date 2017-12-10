@@ -9,29 +9,8 @@
 
 (defn same-color? [board space orig-color]
   (let [space-color (get-in board space)]
-    (and (= orig-color space-color)
+    (and (= space-color orig-color)
          (not= space-color :e))))
-
-(defn four-in-a-row-standard? [board space]
-  (let [color (get-in board space)]
-    (loop [directions  [[0 1]
-                        [-1 1]
-                        [-1 0]
-                        [-1 -1]
-                        [0 -1]
-                        [1 -1]
-                        [1 0]
-                        [1 1]]
-           direction   (first directions)
-           new-space   (map + space direction)
-           connections 1]
-      (if (seq directions)
-        (if (not= connections 4)
-          (if (same-color? board new-space color)
-            (recur directions direction (map + new-space direction) (inc connections))
-            (recur (next directions) (first (next directions)) (map + space (first (next directions))) 1))
-          true)
-        false))))
 
 (defn new-space-super [old-space direction]
   (let [new-space (vec (map + old-space direction))]
@@ -41,9 +20,11 @@
         (<= (second new-space) -1) (assoc new-space 1 6)
         :else new-space))))
 
-
-(defn four-in-a-row-super? [board space]
-  (let [color (get-in board space)]
+(defn four-in-a-row? [board space game]
+  (let [color (get-in board space)
+        get-new-space (case game
+                        :standard #(map + %1 %2)
+                        :super new-space-super)]
     (loop [directions  [[0 1]
                         [-1 1]
                         [-1 0]
@@ -52,26 +33,23 @@
                         [1 -1]
                         [1 0]
                         [1 1]]
-           direction   (first directions)
-           new-space  (new-space-super space direction)
+           starting-space space
            connections 1]
-      (if (seq directions)
-        (if (not= connections 4)
-          (if (same-color? board new-space color)
-            (recur directions direction (new-space-super new-space direction) (inc connections))
-            (recur (next directions) (first (next directions)) (new-space-super space (first (next directions))) 1))
-          true)
-        false))))
+      (let [new-space (get-new-space starting-space (first directions))]
+        (if (seq directions)
+          (if (not= connections 4)
+            (if (same-color? board new-space color)
+              (recur directions new-space (inc connections))
+              (recur (next directions) space 1))
+            true)
+          false)))))
 
 (defn winning-move? [board game]
   (let [spaces (for [i (range 6)
                      j (range 7)]
-                 [i j])
-        check (case game
-                :standard four-in-a-row-standard?
-                :super four-in-a-row-super?)]
+                 [i j])]
     (as-> spaces s
-          (map #(check board %) s)
+          (map #(four-in-a-row? board % game) s)
           (set s)
           (s true))))
 
