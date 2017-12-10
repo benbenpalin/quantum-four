@@ -9,4 +9,5 @@
            [:e :e :e :e :e :e :e]]
    :turn :b
    :alert ""
-   :active true})
+   :active true
+   :game :super})
