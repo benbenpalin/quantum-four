@@ -7,13 +7,18 @@
  (fn  [_ _]
    db/default-db))
 
-(defn same-color? [board space orig-color]
+(defn same-color?
+  "Tests to see if a given space on a given board matches a given color and is not :e"
+  [board space orig-color]
   (let [space-color (get-in board space)]
     (and (= space-color orig-color)
          (not= space-color :e))))
 
-(defn new-space-super [old-space direction]
-  (let [new-space (vec (map + old-space direction))]
+(defn new-space-super
+  "Finds the new space for super 4. If the starting space is at the left or right
+  edge, returns space on the opposite edge. If not, returns standard new space"
+  [starting-space direction]
+  (let [new-space (vec (map + starting-space direction))]
     (when (seq new-space)
       (cond
         (>= (second new-space) 7) (assoc new-space 1 0)
@@ -21,6 +26,8 @@
         :else new-space))))
 
 (defn four-in-a-row? [board space game]
+  "Takes a board, a space, and a game-type, and returns true if that space on the
+   board is the beginning or end of 4 in a row, according to the game-type"
   (let [color (get-in board space)
         get-new-space (case game
                         :standard #(map + %1 %2)
@@ -44,7 +51,8 @@
             true)
           false)))))
 
-(defn winning-move? [board game]
+(defn winning-board [board game]
+  "Returns true if a board have 4 in a row, according to the game type"
   (let [spaces (for [i (range 6)
                      j (range 7)]
                  [i j])]
@@ -57,7 +65,7 @@
   ::check-board
   (fn [{:keys [db]}]
     (let [colors {:r "Red" :b "Black"}]
-      (if (winning-move? (:board db) (:game db))
+      (if (winning-board (:board db) (:game db))
         {:db (assoc db :alert (str ((:turn db) colors) " Wins!") :active false)}
         {:dispatch [::change-turn]}))))
 
