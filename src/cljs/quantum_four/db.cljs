@@ -10,4 +10,4 @@
    :turn :b
    :alert ""
    :active true
-   :game :super})
+   :game :quantum})
