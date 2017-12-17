@@ -113,3 +113,8 @@
          :dispatch [::check-board]}
         {:db (assoc db :alert "This column is full, select a different one")}))))
 
+(rf/reg-event-fx
+  ::play-again
+  (fn [{:keys [db]} _]
+    {:dispatch [::initialize-db]}))
+
