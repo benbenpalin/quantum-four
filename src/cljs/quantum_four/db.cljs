@@ -10,4 +10,5 @@
    :turn :b
    :alert ""
    :active true
+   :game-chosen false
    :game :quantum})

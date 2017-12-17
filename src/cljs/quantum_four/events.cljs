@@ -7,6 +7,11 @@
  (fn  [_ _]
    db/default-db))
 
+(rf/reg-event-db
+  ::choose-game
+  (fn [db [_ game]]
+    (assoc db :game game :game-chosen true)))
+
 (defn same-color?
   "Tests to see if a given space on a given board matches a given color and is not :e"
   [board space orig-color]
@@ -107,3 +112,4 @@
         {:db (update db :board #(assoc-in % empty-space (:turn db)))
          :dispatch [::check-board]}
         {:db (assoc db :alert "This column is full, select a different one")}))))
+

@@ -40,16 +40,24 @@
     [:table>tbody
      (add-row-element board-vector)]))
 
-(defn main-panel []
-  [:div
-   [:h1 "Quantum Four"]
-   [:div.board
-    [table-board]]
-   [:div.below
-    [:p "Turn: "
-     (let [turn @(rf/subscribe [::subs/turn])]
-       (if (= turn :r)
-         "Red"
-         "Black"))]
-    [:p "Alerts: " @(rf/subscribe [::subs/alert])]]])
+(defn game-chooser []
+  [:div "What do you want to play?"
+   [:div {:on-click #(rf/dispatch [::events/choose-game :quaint])} "Quaint"]
+   [:div {:on-click #(rf/dispatch [::events/choose-game :quasi])}  "Quasi"]
+   [:div {:on-click #(rf/dispatch [::events/choose-game :quantum])} "Quantum"]])
 
+(defn main-panel []
+  (let [chosen? @(rf/subscribe [::subs/game-chosen])]
+    [:div
+     [:h1 "Quantum Four"]
+     (if-not chosen?
+       [game-chooser chosen?]
+       [:div.board
+        [table-board]])
+     [:div.below
+      [:p "Turn: "
+       (let [turn @(rf/subscribe [::subs/turn])]
+         (if (= turn :r)
+           "Red"
+           "Black"))]
+      [:p "Alerts: " @(rf/subscribe [::subs/alert])]]]))
