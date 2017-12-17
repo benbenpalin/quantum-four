@@ -20,3 +20,8 @@
   ::active
   (fn [db]
     (:active db)))
+
+(rf/reg-sub
+  ::game-chosen
+  (fn [db]
+    (:game-chosen db)))
