@@ -21,7 +21,6 @@
     :plugins      [[lein-figwheel "0.5.13"]]}}
 
   :cljsbuild
-  :main ^:skip-aot quantum-four.core
 
   {:builds
    [{:id           "dev"
