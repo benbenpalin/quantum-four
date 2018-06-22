@@ -1,6 +1,6 @@
 # quantum-four
 
-A [re-frame](https://github.com/Day8/re-frame) application designed to ... well, that part is up to you.
+A [re-frame](https://github.com/Day8/re-frame) application version of the game Connect Four. Project was tranfered to https://github.com/benbenpalin/q4
 
 ## Development Mode
 
